@@ -1,5 +1,11 @@
 pub mod encod;
 pub mod io;
+use encod::formats::{ 
+    Formats,
+    png::Png,
+    jpg::Jpg,
+    webp::Webp,
+};
 
 #[cfg(test)]
 mod tests;
@@ -51,7 +57,9 @@ fn main() {
                 output_path.as_str(), 
                 img, 
                 use_base64,
-                ".jpg",
+                Formats::Webp(
+                    Webp::new(45).unwrap()
+                ),
             ) {
                 Ok(_) => {
                     println!("Image was saved to {}", output_path);

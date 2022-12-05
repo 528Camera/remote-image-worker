@@ -21,7 +21,7 @@
             },
             "args": [
                 "encode",
-                "${workspaceFolder}/../image.png",
+                "${workspaceFolder}/../image.webp",
                 "${workspaceFolder}/../imb64.txt"
             ],
             "cwd": "${workspaceFolder}"
@@ -44,7 +44,7 @@
             "args": [
                 "decode",
                 "${workspaceFolder}/../imb64.txt",
-                "${workspaceFolder}/../image.png"
+                "${workspaceFolder}/../image.webp"
             ],
             "cwd": "${workspaceFolder}"
         },

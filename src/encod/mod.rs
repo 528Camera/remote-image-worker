@@ -1,3 +1,5 @@
+pub mod formats;
+
 use opencv::prelude::*;
 use opencv::core::{ Mat, Vector };
 use opencv::imgcodecs::{
@@ -21,15 +23,21 @@ pub fn imdecode(buf: Vec<u8>) -> Result<Mat, String> {
     }
 }
 
-/// Encode an image into an array of bytes in a specified format (.jpg, .png, etc.)
+/// Encode an image into an array of bytes in a specified format.
 /// 
 /// **On success:** an array of bytes (`Vec<u8>`) \
 /// **On failure:** an error message (`String`)
-pub fn imencode(img: Mat, ext: &str) -> Result<Vec<u8>, String> {
+pub fn imencode(
+    img: Mat, 
+    format: formats::Formats,
+) -> Result<Vec<u8>, String> {
+    let ext = format.ext();
+    let params = Vector::<i32>::from_slice(&format.params());
+
     let size = img.size().unwrap();
     let size = img.depth() * size.width * size.height;
     let mut buf = Vector::<u8>::with_capacity(size as usize);
-    let params = Vector::<i32>::new();
+
     match cv_imencode(ext, &img, &mut buf, &params) {
         Ok(true) => {
             let buf = buf.as_slice();

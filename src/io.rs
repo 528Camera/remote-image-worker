@@ -52,10 +52,10 @@ pub fn imwrite(
     path: &str,
     img: Mat,
     use_base64: bool,
-    ext: &str,
+    format: crate::encod::formats::Formats,
 ) -> Result<(), String> {
     // Try encoding a Mat into an array of bytes:
-    match crate::encod::imencode(img, ext) {
+    match crate::encod::imencode(img, format) {
         Ok(buf) => {
             // Encode Base64, if needed:
             let imb64 = if use_base64 {
