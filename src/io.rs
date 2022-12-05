@@ -1,18 +1,24 @@
 use std::path::Path;
-use opencv::prelude::*;
-use opencv::core::{ Mat, Vector };
-use opencv::imgcodecs::{
-    imdecode, ImreadModes,
-    imencode, ImwriteFlags,
-};
+use opencv::core::Mat;
 
+/// Read an image from a file on the specified path. 
+/// 
+/// In `use_base64` mode reads a text/binary and 
+/// decodes the Base64 string within. 
+/// Otherwise reads a valid image file. 
+/// 
+/// **On success:** image (`opencv::core::Mat`) \
+/// **On failure:** an error message (`String`)
 pub fn imread<P>(path: P, use_base64: bool) -> Result<Mat, String>
 where P: AsRef<Path> {
+    // Try reading data from file:
     match std::fs::read(path) {
         Ok(input) => {
+            // Try decoding Base64, if needed:
             let buf = if use_base64 {
                 match base64::decode(input) {
                     Ok(buf) => Ok(buf),
+                    // "Throw" an error down the stack:
                     Err(err) => Err(
                         err.to_string()
                     ),
@@ -21,52 +27,56 @@ where P: AsRef<Path> {
                 Ok(input)
             };
             match buf {
-                Ok(buf) => {
-                    let buf = &Vector::<u8>::from_slice(&buf);
-                    let flags = 
-                        ImreadModes::IMREAD_ANYCOLOR as i32
-                        | ImreadModes::IMREAD_COLOR as i32;
-                    match imdecode(buf, flags) {
-                        Ok(img) => Ok(img),
-                        Err(err) => Err(err.message),
-                    }
-                }
+                // Try decoding the received bytes into Mat:
+                Ok(buf) => crate::encod::imdecode(buf),
+                // "Throw" an error down the stack:
                 Err(err) => Err(err),
             }
         }
+        // "Catch" and return the error message:
         Err(err) => Err(
             err.to_string()
         )
     }
 }
 
-pub fn imwrite(path: &str, img: Mat, use_base64: bool) -> Result<(), String> {
-    let size = img.size().unwrap();
-    let size = img.depth() * size.width * size.height;
-    let mut buf = Vector::<u8>::with_capacity(size as usize);
-    match imencode(
-        ".jpg", 
-        &img, 
-        &mut buf, 
-        &Vector::<i32>::new()
-    ) {
-        Ok(true) => {
+/// Save an image into a file on the specified path. 
+/// 
+/// In `use_base64` mode encodes image bytes as Base64
+/// string and writes it in a text/binary.
+/// Otherwise writes in any supported image format. 
+/// 
+/// **On success:** void \
+/// **On failure:** an error message (`String`)
+pub fn imwrite(
+    path: &str,
+    img: Mat,
+    use_base64: bool,
+    ext: &str,
+) -> Result<(), String> {
+    // Try encoding a Mat into an array of bytes:
+    match crate::encod::imencode(img, ext) {
+        Ok(buf) => {
+            // Encode Base64, if needed:
             let imb64 = if use_base64 {
-                Some(base64::encode(buf.as_slice()))
+                Some(base64::encode(&buf))
             } else {
                 None
             };
+            // Convert data into bytes:
             let contents = match &imb64 {
                 Some(imb64) => imb64.as_bytes(),
-                None => buf.as_slice(),
+                None => &buf,
             };
+            // Try writing bytes into file:
             if let Err(err) = std::fs::write(path, contents) {
+                // "Throw" an error down the stack:
                 Err(err.to_string())
             } else { 
                 Ok(())
             }
         }
-        Ok(false) => Ok(()),
-        Err(err) => Err(err.message),
+        // "Catch" and return the error message:
+        Err(err) => Err(err),
     }
 }
