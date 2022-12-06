@@ -1,33 +1,30 @@
+use opencv::imgcodecs::ImwritePNGFlags;
+
 pub mod png;
 pub mod jpg;
 pub mod webp;
 
 pub trait ImgFormat {
-    fn ext() -> &'static str;
+    fn ext(&self) -> &'static str;
     fn params(&self) -> Vec<i32>;
 }
 
-/// Supported image formats.
-pub enum Formats {
-    Png(png::Png),
-    Jpg(jpg::Jpg),
-    Webp(webp::Webp),
+pub struct Png {
+    compression: i32,
+    strategy: ImwritePNGFlags,
+    is_bilevel: bool,
 }
 
-impl Formats {
-    pub fn ext(&self) -> &'static str {
-        match self {
-            Formats::Png(_) => png::Png::ext(),
-            Formats::Jpg(_) => jpg::Jpg::ext(),
-            Formats::Webp(_) => webp::Webp::ext(),
-        }
-    }
+pub struct Jpg {
+    quality: i32,
+    is_progressive: bool,
+    is_optimized: bool,
+    restart_interval: i32,
+    luma_quality: i32,
+    chroma_quality: i32,
+    // sampling_factor: not implemented yet
+}
 
-    pub fn params(&self) -> Vec<i32> {
-        match self {
-            Formats::Png(png) => png.params(),
-            Formats::Jpg(jpg) => jpg.params(),
-            Formats::Webp(webp) => webp.params(),
-        }
-    }
+pub struct Webp {
+    quality: i32,
 }

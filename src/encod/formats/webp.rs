@@ -1,13 +1,8 @@
 use opencv::imgcodecs::ImwriteFlags;
-use super::ImgFormat;
-
-pub struct Webp {
-    quality: i32,
-}
 
 const LOSSLESS_QUALITY: i32 = 100;
 
-impl Default for Webp {
+impl Default for super::Webp {
     fn default() -> Self {
         Self {
             quality: LOSSLESS_QUALITY,
@@ -15,7 +10,7 @@ impl Default for Webp {
     }
 }
 
-impl Webp {
+impl super::Webp {
     pub fn new(
         quality: impl Into<i32>,
     ) -> Option<Self> {
@@ -30,8 +25,8 @@ impl Webp {
     }
 }
 
-impl ImgFormat for Webp {
-    fn ext() -> &'static str { ".webp" }
+impl super::ImgFormat for super::Webp {
+    fn ext(&self) -> &'static str { ".webp" }
 
     fn params(&self) -> Vec<i32> {
         vec![

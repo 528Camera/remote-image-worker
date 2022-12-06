@@ -1,18 +1,11 @@
 use opencv::imgcodecs::{ 
     ImwriteFlags, ImwritePNGFlags
 };
-use super::ImgFormat;
-
-pub struct Png {
-    compression: i32,
-    strategy: ImwritePNGFlags,
-    is_bilevel: bool,
-}
 
 const DEFAULT_COMPRESSION: i32 = 1;
 const DEFAULT_STRATEGY: ImwritePNGFlags = ImwritePNGFlags::IMWRITE_PNG_STRATEGY_DEFAULT;
 
-impl Default for Png {
+impl Default for super::Png {
     fn default() -> Self {
         Self { 
             compression: DEFAULT_COMPRESSION,
@@ -22,7 +15,7 @@ impl Default for Png {
     }
 }
 
-impl Png {
+impl super::Png {
     pub fn with_compression(
         compression: impl Into<i32>,
         is_bilevel: bool,
@@ -51,8 +44,8 @@ impl Png {
     }
 }
 
-impl ImgFormat for Png {
-    fn ext() -> &'static str { ".png" }
+impl super::ImgFormat for super::Png {
+    fn ext(&self) -> &'static str { ".png" }
 
     fn params(&self) -> Vec<i32> {
         let mut params: Vec<i32> = vec![];

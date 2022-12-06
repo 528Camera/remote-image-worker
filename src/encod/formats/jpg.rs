@@ -1,22 +1,10 @@
 use opencv::imgcodecs::ImwriteFlags;
 
-use super::ImgFormat;
-
-pub struct Jpg {
-    quality: i32,
-    is_progressive: bool,
-    is_optimized: bool,
-    restart_interval: i32,
-    luma_quality: i32,
-    chroma_quality: i32,
-    // sampling_factor: not implemented yet
-}
-
 const DISABLE_RST_INTERVAL: i32 = 0;
 const DISABLE_LUMA_QUALITY: i32 = -1;
 const DISABLE_CHROMA_QUALITY: i32 = -1;
 
-impl Default for Jpg {
+impl Default for super::Jpg {
     fn default() -> Self {
         Self { 
             quality: 95,
@@ -29,7 +17,7 @@ impl Default for Jpg {
     }
 }
 
-impl Jpg {
+impl super::Jpg {
     pub fn new(
         quality: impl Into<i32>,
         is_progressive: bool,
@@ -44,8 +32,8 @@ impl Jpg {
         let chroma_quality: i32 = chroma_quality.into();
         if quality >= 0 && quality <= 100
         && restart_interval >= 0 && restart_interval <= 65535
-        && luma_quality >= 0 && luma_quality <= 100
-        && chroma_quality >= 0 && chroma_quality <= 100 
+        && luma_quality >= -1 && luma_quality <= 100
+        && chroma_quality >= -1 && chroma_quality <= 100 
         {
             Some(Self {
                 quality,
@@ -61,8 +49,8 @@ impl Jpg {
     }
 }
 
-impl ImgFormat for Jpg {
-    fn ext() -> &'static str { ".jpg" }
+impl super::ImgFormat for super::Jpg {
+    fn ext(&self) -> &'static str { ".jpg" }
 
     fn params(&self) -> Vec<i32> {
         let mut params = vec![

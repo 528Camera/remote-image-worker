@@ -24,7 +24,8 @@ You might need to install `libzmq` library for this to work.
 3. In the project directory:
     * `cargo build` to build the executable; it will appear as *target/debug/remote-image-worker* file;
     * `cargo build --release` to build the optimized executable; it will appear as *target/release/remote-image-worker* file;
-    * `cargo run -- {arguments}` to run the executable in **debug** configuration.
+    * `cargo test {test-name}` to run a specific test (see *src/tests/mod.rs*);
+    * `cargo run -- {arguments}` to run the executable in **debug** configuration;
 
 ## Develop
 It is advised to use [VS Code](https://vscodium.com/) or a comparable editor/IDE.

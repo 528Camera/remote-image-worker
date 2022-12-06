@@ -29,7 +29,7 @@ pub fn imdecode(buf: Vec<u8>) -> Result<Mat, String> {
 /// **On failure:** an error message (`String`)
 pub fn imencode(
     img: Mat, 
-    format: formats::Formats,
+    format: impl formats::ImgFormat,
 ) -> Result<Vec<u8>, String> {
     let ext = format.ext();
     let params = Vector::<i32>::from_slice(&format.params());

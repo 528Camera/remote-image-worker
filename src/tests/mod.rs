@@ -1,30 +1,22 @@
-mod io;
-use opencv::prelude::*;
-use opencv::core::Mat;
+//! This is a collection of tests for various functions in this "library". \
+//! To run a specific test, use `cargo test {test-name}`. \
+//! 
+//! These tests require additional resources (images) to be placed in *target/test_samples* directory.
+//! 
+//! Included tests:
+//! * base64:
+//!     * `run_base64_encode`
+//!     * `run_base64_decode`
+//! * formats: `convert_x_to_y`, where x and y are:
+//!     * png
+//!     * jpg
+//!     * webp
 
-/// Equality of two matrices.
-fn mat_eq(mat1: Mat, mat2: Mat) -> bool {
-    if mat1.size().unwrap() != mat2.size().unwrap() {
-        return false;
-    }
-    let mut diff = Mat::new_size_with_default(
-        mat1.size().unwrap(),
-        opencv::core::CV_32S,
-        opencv::core::Scalar::default(),
-    ).unwrap();
+mod mat_eq;
+mod base64;
+mod formats;
 
-    opencv::core::compare(
-        &mat1, 
-        &mat2,
-        &mut diff,
-        opencv::core::CMP_NE
-    ).unwrap();
-    
-    let nz = opencv::core::count_non_zero(&diff).unwrap();
-    return nz == 0;
-}
-
-/// Read test sample from file in *target/test_samples/* subdirectory. 
+/// Get test sample filename in *target/test_samples/* subdirectory. 
 fn read_sample(name: &str) -> Vec<u8> {
     std::fs::read(
         format!(
@@ -33,4 +25,15 @@ fn read_sample(name: &str) -> Vec<u8> {
             name,
         )
     ).unwrap()
+}
+
+fn write_result(name: &str, contents: &[u8]) {
+    std::fs::write(
+        format!(
+            "{}/target/test_results/{}",
+            env!("CARGO_MANIFEST_DIR"),
+            name,
+        ),
+        contents,
+    ).unwrap();
 }
