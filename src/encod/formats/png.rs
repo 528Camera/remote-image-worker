@@ -3,7 +3,7 @@ use opencv::imgcodecs::{
 };
 
 const DEFAULT_COMPRESSION: i32 = 1;
-const DEFAULT_STRATEGY: ImwritePNGFlags = ImwritePNGFlags::IMWRITE_PNG_STRATEGY_DEFAULT;
+const DEFAULT_STRATEGY: ImwritePNGFlags = ImwritePNGFlags::IMWRITE_PNG_STRATEGY_RLE;
 
 impl Default for super::Png {
     fn default() -> Self {
@@ -24,7 +24,7 @@ impl super::Png {
         if compression >= 0 && compression <= 9 {
             Some(Self {
                 compression,
-                strategy: DEFAULT_STRATEGY,
+                strategy: ImwritePNGFlags::IMWRITE_PNG_STRATEGY_DEFAULT,
                 is_bilevel,
             })
         } else {

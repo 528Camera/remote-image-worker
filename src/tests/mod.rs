@@ -14,11 +14,15 @@
 //! * protobuf (pb):
 //!     * `run_pb_pack`
 //!     * `test_pb_unpack`
+//! * image processing (proc):
+//!     * `run_reduce_colors`
 
 mod mat_eq;
 mod base64;
 mod formats;
 mod pb;
+
+mod proc;
 
 /// Get test sample filename in *target/test_samples/* subdirectory. 
 fn read_sample(name: &str) -> Vec<u8> {
