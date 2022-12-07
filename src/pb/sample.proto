@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+message Sample {
+    int32 version = 1;
+    int32 frame_id = 2;
+    int64 timestamp = 3;
+    bytes image_data = 4;
+}

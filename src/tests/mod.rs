@@ -11,10 +11,14 @@
 //!     * png
 //!     * jpg
 //!     * webp
+//! * protobuf (pb):
+//!     * `run_pb_pack`
+//!     * `test_pb_unpack`
 
 mod mat_eq;
 mod base64;
 mod formats;
+mod pb;
 
 /// Get test sample filename in *target/test_samples/* subdirectory. 
 fn read_sample(name: &str) -> Vec<u8> {

@@ -2,21 +2,16 @@ pub mod formats;
 
 use opencv::prelude::*;
 use opencv::core::{ Mat, Vector };
-use opencv::imgcodecs::{
-    imdecode as cv_imdecode, ImreadModes,
-    imencode as cv_imencode, ImwriteFlags,
-};
 
 /// Decode an image from an array of bytes.
 /// 
 /// **On success:** image (`opencv::core::Mat`) \
 /// **On failure:** an error message (`String`)
 pub fn imdecode(buf: Vec<u8>) -> Result<Mat, String> {
+    use opencv::imgcodecs::{ IMREAD_ANYCOLOR, IMREAD_COLOR };
+    let flags = IMREAD_ANYCOLOR | IMREAD_COLOR;
     let buf = &Vector::<u8>::from_slice(&buf);
-    let flags = 
-        ImreadModes::IMREAD_ANYCOLOR as i32
-        | ImreadModes::IMREAD_COLOR as i32;
-    match cv_imdecode(buf, flags) {
+    match opencv::imgcodecs::imdecode(buf, flags) {
         Ok(img) => Ok(img),
         // "Throw" an error down the stack:
         Err(err) => Err(err.message),
@@ -38,7 +33,7 @@ pub fn imencode(
     let size = img.depth() * size.width * size.height;
     let mut buf = Vector::<u8>::with_capacity(size as usize);
 
-    match cv_imencode(ext, &img, &mut buf, &params) {
+    match opencv::imgcodecs::imencode(ext, &img, &mut buf, &params) {
         Ok(true) => {
             let buf = buf.as_slice();
             Ok(Vec::from(buf))
