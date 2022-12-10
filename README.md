@@ -40,7 +40,11 @@ If using VS Code, install the following extensions:
 ### protobuf
 Program uses Google's [protobuf](https://developers.google.com/protocol-buffers) to serialize and deserialize data packets.
 
-To build this program, you will need to [install](https://grpc.io/docs/protoc-installation/) the protobuf compiler ([protoc](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation)).
+To build this program, you will need to [install](https://grpc.io/docs/protoc-installation/) the protobuf compiler ([protoc](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation)):
+* If you're using the package manager, you might end up with an old version, but you will not need any additional steps;
+* If you install the latest [pre-compiled binaries](https://github.com/protocolbuffers/protobuf/releases):
+  * Set the **PROTOC** environmental variable to point at the *protoc* executable (e.g. `export PROTOC='$HOME/.local/bin/protoc'`);
+  * Alternatively, modify *build.rs* to reflect the location of your *protoc* installation.
 
 ## Test
 To run a specific test, use `cargo test {test-name}`.
