@@ -1,12 +1,7 @@
 //! Test runs for protobuf serialization/deserialization
-use std::borrow::Cow;
-use std::time::{ SystemTime, UNIX_EPOCH };
+use std::time::SystemTime;
 
-use crate::pb::sample::Sample;
-use quick_protobuf::{ 
-    MessageRead, MessageWrite, 
-    BytesReader, Writer,
-};
+use crate::pb::{ deserialize_frame_data, serialize_frame_data };
 
 const IMAGE_FILE: &str = "image.jpg";
 const BINARY_FILE: &str = "image.dat";
@@ -19,27 +14,25 @@ const EXPECTED_VERSION: i32 = 1;
 /// The result will be saved into an *image.dat* file. 
 #[test]
 fn run_pb_pack() {
-    let imbytes = super::read_sample(IMAGE_FILE);
-    let timestamp = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap()
-        .as_millis()
-            as i64;
+    let image = super::read_sample(IMAGE_FILE);
+
+    let time = Some(
+        prost_types::Timestamp::from(
+            SystemTime::now()
+        )
+    );
 
     // Protobuf struct:
-    let message = Sample {
+    let frame_data = crate::pb::frame_data::FrameData { 
         version: EXPECTED_VERSION,
-        frame_id: 1,
-        timestamp,
-        image_data: Cow::from(imbytes),
+        image, 
+        time,
+        frame_index: 1,
     };
 
     // Write the message into byte array:
-    let mut r = vec![];
-    let mut writer = Writer::new(&mut r);
-    message.write_message(&mut writer).unwrap();
-
-    super::write_result(BINARY_FILE, &r);
+    let contents = serialize_frame_data(&frame_data);
+    super::write_result(BINARY_FILE, &contents);
 }
 
 /// Extract the image from protobuf bytes.
@@ -51,24 +44,31 @@ fn run_pb_pack() {
 /// the test succeeds.
 #[test]
 fn test_pb_unpack() {
-    let bytes = super::read_sample(BINARY_FILE);
+    let buf = super::read_sample(BINARY_FILE);
 
     // Parse protobuf from byte array:
-    let mut r = BytesReader::from_bytes(&bytes);
-    let message = Sample::from_reader(&mut r, &bytes).unwrap();
-
-    assert_eq!(message.version, EXPECTED_VERSION);
-    println!("Frame ID: {}", message.frame_id);
+    let frame_data = deserialize_frame_data(&buf).unwrap();
     
-    println!("Timestamp from Unix epoch: {} ms", message.timestamp);
+    assert_eq!(frame_data.version, EXPECTED_VERSION);
+    println!("Frame ID: {}", frame_data.frame_index);
+    
+    println!(
+        "Timestamp: {} ms", 
+        SystemTime::try_from(
+            frame_data.time.unwrap()
+        )
+        .unwrap()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_millis());
 
     // Read the original image:
     let imbytes = super::read_sample(IMAGE_FILE);
 
-    assert_eq!(message.image_data.len(), imbytes.len());
+    assert_eq!(frame_data.image.len(), imbytes.len());
     // Find the first unequal byte:
     let cmp = imbytes.iter()
-        .zip(message.image_data.iter())
+        .zip(frame_data.image.iter())
         .find(|(a, b)| b != a);
     // No bytes are unequal === All bytes are equal
     assert!(cmp.is_none());
