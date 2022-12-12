@@ -21,8 +21,8 @@ mod mat_eq;
 mod base64;
 mod formats;
 mod pb;
-
 mod proc;
+mod sockets;
 
 /// Get test sample filename in *target/test_samples/* subdirectory. 
 fn read_sample(name: &str) -> Vec<u8> {
