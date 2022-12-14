@@ -31,7 +31,7 @@ fn run_pb_pack() {
     };
 
     // Write the message into byte array:
-    let contents = serialize_frame_data(&frame_data);
+    let contents = serialize_frame_data(&frame_data).unwrap();
     super::write_result(BINARY_FILE, &contents);
 }
 

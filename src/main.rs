@@ -1,3 +1,4 @@
+pub mod error;
 pub mod encod;
 pub mod pb;
 pub mod proc;
