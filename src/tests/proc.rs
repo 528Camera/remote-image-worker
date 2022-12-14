@@ -10,8 +10,11 @@ const IMAGE_NAME: &str = "image.png";
 #[test]
 fn run_reduce_colors() {
     let imbytes = super::read_sample(IMAGE_NAME);
+    // Decode: ~120 ms
     let image = imdecode(imbytes).unwrap();
+    // Reduce: ~200 ms (~500 ms without rayon)
     let img = reduce_colors(image).unwrap();
+    // Encode: ~120 ms
     let contents = imencode(img, Png::default()).unwrap();
     super::write_result(IMAGE_NAME, &contents);
 }

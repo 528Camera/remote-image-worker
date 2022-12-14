@@ -1,5 +1,6 @@
 use opencv::prelude::*;
 use opencv::core::{ Vec3b, Mat };
+use rayon::prelude::*;
 use crate::error::{ Result, Error };
 
 #[inline]
@@ -37,7 +38,7 @@ macro_rules! try_let {
 
 pub fn reduce_colors(image: Mat) -> Result<Mat> {
     let pixels = try_let!(image.data_typed::<Vec3b>());
-    let pixels: Vec<Vec3b> = pixels.iter()
+    let pixels: Vec<Vec3b> = pixels.par_iter()
         .map(reduce_color)
         .collect();
     let mat = try_let!(Mat::from_slice(&pixels));
