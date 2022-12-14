@@ -49,7 +49,7 @@ To build this program, you will need to [install](https://grpc.io/docs/protoc-in
 ## Test
 To run a specific test, use `cargo test {test-name}`.
 
-These tests require additional resources (images) 
+Some of the tests require additional resources (images) 
 to be placed in *target/test_samples* directory.
  
 Included tests:
@@ -63,5 +63,8 @@ Included tests:
 * protobuf (pb):
   * `run_pb_pack`
   * `test_pb_unpack`
+* sockets:
+  * `test_push_socket`
+  * `test_pull_socket`
 * image processing (proc):
   * `run_reduce_colors`

@@ -7,7 +7,7 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Encoding: debug",
+            "name": "Debug",
             "cargo": {
                 "args": [
                     "build",
@@ -20,31 +20,8 @@
                 }
             },
             "args": [
-                "encode",
-                "${workspaceFolder}/../image.webp",
-                "${workspaceFolder}/../imb64.txt"
-            ],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Decoding: debug",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=remote-image-worker",
-                    "--package=remote-image-worker"
-                ],
-                "filter": {
-                    "name": "remote-image-worker",
-                    "kind": "bin"
-                }
-            },
-            "args": [
-                "decode",
-                "${workspaceFolder}/../imb64.txt",
-                "${workspaceFolder}/../image.webp"
+                "tcp://127.0.0.1:5557",
+                "tcp://*:5557",
             ],
             "cwd": "${workspaceFolder}"
         },
