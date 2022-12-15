@@ -10,6 +10,7 @@ mod tests;
 struct Args {
     pull_ep: String,
     push_ep: String,
+    dump_path: Option<String>,
 }
 
 fn args() -> Args {
@@ -17,9 +18,11 @@ fn args() -> Args {
     let _name = args.next().unwrap();
     let pull_ep = args.next().unwrap();
     let push_ep = args.next().unwrap();
+    let dump_path = args.next();
     Args {
         pull_ep,
         push_ep,
+        dump_path,
     }
 }
 
@@ -39,9 +42,10 @@ macro_rules! try_let {
 const MAX_RETRY_COUNT: i32 = 10;
 
 fn main() {
-    let Args { pull_ep, push_ep } = args();
+    let Args { pull_ep, push_ep, dump_path } = args();
     let puller = sockets::PullSocket::new(pull_ep.as_str()).unwrap();
-    let pusher = sockets::PushSocket::new(push_ep.as_str()).unwrap();
+    let pusher = sockets::PushSocket::new().unwrap();
+    pusher.connect(push_ep.as_str()).unwrap();
     // TODO: wait for sockets to initialize
     // PUSH must detect a receiver first
     let mut retry_count = 0;
@@ -66,6 +70,17 @@ fn main() {
             encod::imencode(img, encod::formats::Jpg::default()),
             "Failed to encode the image"
         );
+        if let Some(ref path) = dump_path {
+            std::fs::write(
+                format!(
+                    "{}/frame_{}.jpg",
+                    path,
+                    frame_data.frame_index,
+                ), 
+                data,
+            ).unwrap();
+            continue;
+        }
         frame_data.image = data;
         try_let!(
             pusher.push(frame_data),

@@ -11,7 +11,8 @@ const EXPECTED_VERSION: i32 = 1;
  
 #[test]
 fn test_push_socket() {
-    let pusher = PushSocket::new("tcp://*:5557").unwrap();
+    let pusher = PushSocket::new().unwrap();
+    pusher.bind("tcp://*:5557").unwrap();
     for i in 0..FRAME_COUNT {
         let frame_data = FrameData {
             version: EXPECTED_VERSION,

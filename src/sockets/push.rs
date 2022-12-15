@@ -13,12 +13,21 @@ macro_rules! try_let {
 }
 
 impl super::PushSocket {
-    pub fn new(endpoint: &str) -> Result<Self> {
+    pub fn new() -> Result<Self> {
         let context = zmq::Context::new();
         let socket = try_let!(context.socket(zmq::PUSH));
         try_let!(socket.set_linger(super::SOCKET_LINGER));
-        try_let!(socket.bind(endpoint));
         Ok(Self { socket })
+    }
+
+    pub fn connect(&self, endpoint: &str) -> Result<()> {
+        try_let!(self.socket.connect(endpoint));
+        Ok(())
+    }
+
+    pub fn bind(&self, endpoint: &str) -> Result<()> {
+        try_let!(self.socket.bind(endpoint));
+        Ok(())
     }
 
     pub fn push(&self, frame_data: FrameData) -> Result<()> {
