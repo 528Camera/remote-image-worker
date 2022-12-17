@@ -1,7 +1,6 @@
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
-package frame_data;
 
 option java_outer_classname = "CameraFramework";
 option csharp_namespace = "CameraFramework";

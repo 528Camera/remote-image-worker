@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="encod\encod.cpp">
+      <Filter>encod</Filter>
+    </ClCompile>
+    <ClCompile Include="encod\format_jpg.cpp">
+      <Filter>encod</Filter>
+    </ClCompile>
+    <ClCompile Include="proc\color.cpp">
+      <Filter>proc</Filter>
+    </ClCompile>
+    <ClCompile Include="pb\frame_data.pb.cc">
+      <Filter>pb</Filter>
+    </ClCompile>
+    <ClCompile Include="pb\pb.cpp">
+      <Filter>pb</Filter>
+    </ClCompile>
+    <ClCompile Include="proc\Edge.cpp">
+      <Filter>proc</Filter>
+    </ClCompile>
+    <ClCompile Include="sockets\PushSocket.cpp">
+      <Filter>sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="sockets\PullSocket.cpp">
+      <Filter>sockets</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="encod\format_jpg.h">
+      <Filter>encod</Filter>
+    </ClInclude>
+    <ClInclude Include="encod\encod.h">
+      <Filter>encod</Filter>
+    </ClInclude>
+    <ClInclude Include="proc\proc.h">
+      <Filter>proc</Filter>
+    </ClInclude>
+    <ClInclude Include="pb\frame_data.pb.h">
+      <Filter>pb</Filter>
+    </ClInclude>
+    <ClInclude Include="pb\pb.h">
+      <Filter>pb</Filter>
+    </ClInclude>
+    <ClInclude Include="sockets\Sockets.h">
+      <Filter>sockets</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="encod">
+      <UniqueIdentifier>{c298d2d6-6e23-4bcf-a658-3a17d5c37723}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="proc">
+      <UniqueIdentifier>{04663b1f-0bb4-4140-acbc-ce869a47b58b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pb">
+      <UniqueIdentifier>{7ee198a7-9bbf-4474-a475-4e1e9276ab64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sockets">
+      <UniqueIdentifier>{a9522c8b-e19c-4818-bce8-145d51907e80}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
