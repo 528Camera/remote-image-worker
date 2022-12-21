@@ -3,11 +3,11 @@ A little educational program for remote distributed image processing - Go branch
 
 ## Requirements
 ### opencv
-Program uses [opencv](https://opencv.org/) ([bindings](https://crates.io/crates/opencv)) to process the image.
+Program uses [opencv](https://opencv.org/) ([bindings](https://https://gocv.io/)) to process the image.
 
-Use the instructions to install the library on [Windows](https://docs.opencv.org/4.x/d3/d52/tutorial_windows_install.html) or [Linux](https://docs.opencv.org/4.x/d7/d9f/tutorial_linux_install.html).
+To set up **gocv** easily, use the tutorial for [Windows](https://gocv.io/getting-started/windows/) or [Linux](https://gocv.io/getting-started/linux/).
 
-Alternatively, use the package manager:
+You may also install OpenCV independently. Use OpenCV instructions for [Windows](https://docs.opencv.org/4.x/d3/d52/tutorial_windows_install.html) or [Linux](https://docs.opencv.org/4.x/d7/d9f/tutorial_linux_install.html) to do that. Alternatively, use the package manager:
 * Chocolatey (Windows): `choco install opencv`
 * Ubuntu: `sudo apt install libopencv-dev`
 * Fedora: `sudo dnf install opencv`
