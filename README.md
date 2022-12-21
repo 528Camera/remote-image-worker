@@ -43,7 +43,7 @@ The protobuf code should already be generated and placed in the repository. Othe
 `protoc -I=internal/pb/ --go_out=internal/pb/ internal/pb/frame_data.proto`
 
 ## Test
-To run a specific test, use `go test {test-file}`.
+To run a specific test, use `go test {test-file}` (e.g. `go test test/proc/proc_test.go`).
  
 Included tests:
 * *socket*: for better effect (parallel testing) open the terminal in *test/socket* directory and run `go test` with no arguments.
