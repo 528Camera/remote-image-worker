@@ -1,5 +1,5 @@
 # remote-image-worker
-A little educational program for remote distributed image processing.
+A little educational program for remote distributed image processing - Go branch!
 
 ## Requirements
 ### opencv
@@ -19,52 +19,37 @@ Program uses [zeromq](https://zeromq.org/) ([bindings](https://crates.io/crates/
 You might need to install `libzmq` library for this to work.
 
 ## Install
-1. Install [Rust](https://rustup.rs/)
+1. Install [Go](https://go.dev/)
 2. Install [protoc](#protobuf)
 3. Clone this repository
 4. Update submodules: `git submodule update --init`
 5. In the project directory:
-    * `cargo build` to build the executable; it will appear as *target/debug/remote-image-worker* file;
-    * `cargo build --release` to build the optimized executable; it will appear as *target/release/remote-image-worker* file;
-    * `cargo test {test-name}` to run a specific test (see [Tests](#test) or *src/tests/mod.rs*);
-    * `cargo run -- {arguments}` to run the executable in **debug** configuration;
+  * `go get` to download dependencies;
+  * `go build` to build the executable; it will appear as *remote-image-worker* file;
+  * `go test {test-file}` to run a specific test (see [Tests](#test));
+  * `go run . {arguments}` to run the executable;
 
 ## Develop
 ### IDE
 It is advised to use [VS Code](https://vscodium.com/) or a comparable editor/IDE.
 
-If using VS Code, install the following extensions:
-* **rust-analyzer** language server - for syntax highlighting and other good stuff;
-* **CodeLLDB** - for debugging the executable.
+If using VS Code, install the **Go** extension for syntax highlighting, debugging and other good stuff.
 
 ### protobuf
 Program uses Google's [protobuf](https://developers.google.com/protocol-buffers) to serialize and deserialize data packets.
 
-To build this program, you will need to [install](https://grpc.io/docs/protoc-installation/) the protobuf compiler ([protoc](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation)):
-* If you're using the package manager, you might end up with an old version, but you will not need any additional steps;
-* If you install the latest [pre-compiled binaries](https://github.com/protocolbuffers/protobuf/releases):
-  * Set the **PROTOC** environmental variable to point at the *protoc* executable (e.g. `export PROTOC='$HOME/.local/bin/protoc'`);
-  * Alternatively, modify *build.rs* to reflect the location of your *protoc* installation.
+The protobuf code should already be generated and placed in the repository. Otherwise, you may need the protobuf compiler ([protoc](https://github.com/protocolbuffers/protobuf/releases)). Once you have it, run the following [command](https://developers.google.com/protocol-buffers/docs/gotutorial):
+
+`protoc -I=internal/pb/ --go_out=internal/pb/ internal/pb/frame_data.proto`
 
 ## Test
-To run a specific test, use `cargo test {test-name}`.
-
-Some of the tests require additional resources (images) 
-to be placed in *target/test_samples* directory.
+To run a specific test, use `go test {test-file}`.
  
 Included tests:
-* base64:
-  * `run_base64_encode`
-  * `run_base64_decode`
-* formats: `convert_x_to_y`, where x and y are:
-  * png
-  * jpg
-  * webp
-* protobuf (pb):
-  * `run_pb_pack`
-  * `test_pb_unpack`
-* sockets:
-  * `test_push_socket`
-  * `test_pull_socket`
-* image processing (proc):
-  * `run_reduce_colors`
+* *socket*: for better effect (parallel testing) open the terminal in *test/socket* directory and run `go test` with no arguments.
+  * *pull_test.go*
+  * *push_test.go*
+* *proc*: image processing tests; require an *image.jpg* file to be present in *test/proc* directory.
+  * *color_test.go* - color reduction; 
+  * *edge_test.go* - edge detection;
+  * *proc_test.go* - composition of results.

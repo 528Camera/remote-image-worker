@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+package frame_data;
+
+option java_outer_classname = "CameraFramework";
+option csharp_namespace = "CameraFramework";
+option go_package = "github.com/AsriFox/remote-image-worker/frame_data";
+
+message FrameData {
+    int32 version = 1;
+    bytes image = 2;
+    google.protobuf.Timestamp time = 3;
+    int32 frame_index = 4;
+}
+
