@@ -36,7 +36,7 @@ fn convert(name: &str, format: impl ImgFormat) {
 
     let result_name = format!("{}{}", name, &format.ext());
 
-    let imbytes = imencode(img, format).unwrap();
+    let imbytes = imencode(img, &format).unwrap();
 
     super::write_result(
         result_name.as_str(),

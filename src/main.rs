@@ -48,6 +48,7 @@ fn main() {
     pusher.connect(push_ep.as_str()).unwrap();
     // TODO: wait for sockets to initialize
     // PUSH must detect a receiver first
+    let format = encod::formats::Jpg::new(20, false, true, 0, -1, -1).unwrap();
     let mut retry_count = 0;
     while retry_count < MAX_RETRY_COUNT {
         let mut frame_data = match puller.pull() {
@@ -62,12 +63,18 @@ fn main() {
             encod::imdecode(frame_data.image),
             "Failed to decode the image"
         );
+        let sw = std::time::Instant::now();
         let img = try_let!(
-            proc::color::reduce_colors(image),
+            proc::proc(image),
             "Failed to process the image"
         );
+        println!(
+            "Took {}s to process frame #{}", 
+            sw.elapsed().as_secs_f32(), 
+            frame_data.frame_index,
+        );
         let data = try_let!(
-            encod::imencode(img, encod::formats::Jpg::default()),
+            encod::imencode(img, &format),
             "Failed to encode the image"
         );
         if let Some(ref path) = dump_path {

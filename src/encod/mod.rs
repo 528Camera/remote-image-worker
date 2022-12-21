@@ -23,7 +23,7 @@ pub fn imdecode(buf: Vec<u8>) -> Result<Mat> {
 /// 
 /// **On success:** an array of bytes (`Vec<u8>`) \
 /// **On failure:** ImEncodeError
-pub fn imencode(img: Mat, format: impl formats::ImgFormat) -> Result<Vec<u8>> {
+pub fn imencode(img: Mat, format: &impl formats::ImgFormat) -> Result<Vec<u8>> {
     let ext = format.ext();
     let params = Vector::<i32>::from_slice(&format.params());
 

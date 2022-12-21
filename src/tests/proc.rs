@@ -1,5 +1,9 @@
-use crate::proc::color::reduce_colors;
 use crate::encod::{ imdecode, imencode, formats::Png };
+use crate::proc::{
+    color::reduce_colors,
+    edge::detect_edges,
+    proc,
+};
 
 const IMAGE_NAME: &str = "image.png";
 
@@ -15,6 +19,25 @@ fn run_reduce_colors() {
     // Reduce: ~200 ms (~500 ms without rayon)
     let img = reduce_colors(image).unwrap();
     // Encode: ~120 ms
-    let contents = imencode(img, Png::default()).unwrap();
+    let contents = imencode(img, &Png::default()).unwrap();
     super::write_result(IMAGE_NAME, &contents);
+}
+
+#[test]
+fn run_detect_edges() {
+    let imbytes = super::read_sample(IMAGE_NAME);
+    let image = imdecode(imbytes).unwrap();
+    let img = detect_edges(image).unwrap();
+    let contents = imencode(img, &Png::default()).unwrap();
+    super::write_result(IMAGE_NAME, &contents);
+}
+
+#[test]
+fn run_proc() {
+    let imbytes = super::read_sample(IMAGE_NAME);
+    let image = imdecode(imbytes).unwrap();
+    let img = proc(image).unwrap();
+    let format = crate::encod::formats::Jpg::new(20, false, true, 0, -1, -1).unwrap();
+    let contents = imencode(img, &format).unwrap();
+    super::write_result("image.jpg", &contents);
 }

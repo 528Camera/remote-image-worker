@@ -8,6 +8,8 @@ pub enum Error {
 
     // Processing
     ProcReduceColorFailed(String),
+    ProcDetectEdgesFailed(String),
+    ProcResultsAddFailed(String),
 
     // Protobuf
     PbEncodeFailed(String),
