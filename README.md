@@ -3,7 +3,7 @@ A little educational program for remote distributed image processing - Go branch
 
 ## Requirements
 ### opencv
-Program uses [opencv](https://opencv.org/) ([bindings](https://https://gocv.io/)) to process the image.
+Program uses [opencv](https://opencv.org/) ([bindings](https://gocv.io/)) to process the image.
 
 To set up **gocv** easily, use the tutorial for [Windows](https://gocv.io/getting-started/windows/) or [Linux](https://gocv.io/getting-started/linux/).
 
