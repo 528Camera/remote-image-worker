@@ -16,7 +16,9 @@ type PushSocket struct {
 func NewPushSocket() (*PushSocket, error) {
 	s := zmq.NewPush(
 		context.Background(),
-		zmq.WithDialerTimeout(time.Second*3),
+		zmq.WithDialerTimeout(time.Second),
+		zmq.WithDialerRetry(time.Second),
+		zmq.WithDialerMaxRetries(3),
 	)
 	return &PushSocket{s}, nil
 }

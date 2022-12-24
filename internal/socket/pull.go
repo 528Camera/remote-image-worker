@@ -16,7 +16,9 @@ type PullSocket struct {
 func NewPullSocket(endpoint string) (*PullSocket, error) {
 	s := zmq.NewPull(
 		context.Background(),
-		zmq.WithDialerTimeout(time.Second*3),
+		zmq.WithDialerTimeout(time.Second),
+		zmq.WithDialerRetry(time.Second),
+		zmq.WithDialerMaxRetries(3),
 	)
 	if err := s.Dial(endpoint); err != nil {
 		s.Close()

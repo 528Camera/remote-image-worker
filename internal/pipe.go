@@ -8,11 +8,12 @@ import (
 	"github.com/AsriFox/remote-image-worker/internal/encod"
 	"github.com/AsriFox/remote-image-worker/internal/proc"
 	"github.com/AsriFox/remote-image-worker/internal/socket"
+	"gocv.io/x/gocv"
 )
 
 type Pipeline struct {
-	puller    socket.PullSocket
-	pusher    socket.PushSocket
+	puller    *socket.PullSocket
+	pusher    *socket.PushSocket
 	dump_path string
 }
 
@@ -35,10 +36,19 @@ func NewPipeline(pull_ep string, push_ep string) (*Pipeline, error) {
 		pusher.Close()
 		return nil, err
 	}
-	return &Pipeline{*puller, *pusher, ""}, nil
+	return &Pipeline{puller, pusher, ""}, nil
 }
 
-func (pipe Pipeline) SetDumpPath(dump_path string) {
+func NewPipelineDump(pull_ep string, dump_path string) (*Pipeline, error) {
+	puller, err := socket.NewPullSocket(pull_ep)
+	if err != nil {
+		log.Println("Failed to create a PULL socket")
+		return nil, err
+	}
+	return &Pipeline{puller, nil, dump_path}, nil
+}
+
+func (pipe *Pipeline) SetDumpPath(dump_path string) {
 	pipe.dump_path = dump_path
 }
 
@@ -56,11 +66,17 @@ func (pipe Pipeline) Process() error {
 		// log.Println("Failed to decode")
 		return err
 	}
+
+	edg := proc.DetectEdges(&img)
+	gocv.CvtColor(edg, &edg, gocv.ColorGrayToBGR)
 	err = proc.ReduceColors(&img)
 	if err != nil {
 		// log.Println("Failed to process the image")
 		return err
 	}
+	imgr := img.Clone()
+	gocv.AddWeighted(img, 1.0, edg, -1.0, 0.0, &imgr)
+
 	buf, err := encod.NewJpegDefaults(50).Imencode(img)
 	if err != nil {
 		// log.Println("Failed to encode the image")
@@ -68,7 +84,7 @@ func (pipe Pipeline) Process() error {
 	}
 	if pipe.dump_path != "" {
 		err = os.WriteFile(
-			fmt.Sprintf("%s/frame_%d", pipe.dump_path, frame_data.FrameIndex),
+			fmt.Sprintf("%s/frame_%d.jpg", pipe.dump_path, frame_data.FrameIndex),
 			buf,
 			os.ModePerm,
 		)
