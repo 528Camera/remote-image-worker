@@ -3,9 +3,7 @@ use prost::Message;
 use frame_data::FrameData;
 use crate::error::{ Result, Error };
 
-pub mod frame_data {
-    include!(concat!(env!("OUT_DIR"), "/frame_data.rs"));
-}
+pub mod frame_data;
 
 pub fn serialize_frame_data(frame_data: &FrameData) -> Result<Vec<u8>> {
     let mut buf = vec![];
