@@ -1,8 +1,11 @@
 package socket
 
 import (
+	"context"
+	"time"
+
 	pb "github.com/AsriFox/remote-image-worker/internal/pb"
-	zmq "github.com/pebbe/zmq4"
+	zmq "github.com/go-zeromq/zmq4"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -11,35 +14,30 @@ type PushSocket struct {
 }
 
 func NewPushSocket() (*PushSocket, error) {
-	zctx, err := zmq.NewContext()
-	if err != nil {
-		return nil, err
-	}
-	s, err := zctx.NewSocket(zmq.PUSH)
-	if err != nil {
-		return nil, err
-	}
-	err = s.SetLinger(100)
-	return &PushSocket{*s}, err
+	s := zmq.NewPush(
+		context.Background(),
+		zmq.WithDialerTimeout(time.Second*3),
+	)
+	return &PushSocket{s}, nil
 }
 
-func (self PushSocket) Bind(endpoint string) error {
-	return self.socket.Bind(endpoint)
+func (pusher PushSocket) Bind(endpoint string) error {
+	return pusher.socket.Listen(endpoint)
 }
 
-func (self PushSocket) Connect(endpoint string) error {
-	return self.socket.Connect(endpoint)
+func (pusher PushSocket) Connect(endpoint string) error {
+	return pusher.socket.Dial(endpoint)
 }
 
-func (self PushSocket) Push(frame_data *pb.FrameData) error {
+func (pusher PushSocket) Push(frame_data *pb.FrameData) error {
 	out, err := proto.Marshal(frame_data)
 	if err != nil {
 		return err
 	}
-	_, err = self.socket.SendBytes(out, 0)
-	return err
+	msg := zmq.NewMsg(out)
+	return pusher.socket.Send(msg)
 }
 
-func (self PushSocket) Close() error {
-	return self.socket.Close()
+func (pusher PushSocket) Close() error {
+	return pusher.socket.Close()
 }
