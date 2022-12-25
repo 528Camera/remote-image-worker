@@ -18,14 +18,14 @@ func main() {
 	}
 	pull_ep := os.Args[1]
 	push_ep := os.Args[2]
+	var dump_path string = ""
+	if len(os.Args) == 4 {
+		dump_path = os.Args[3]
+	}
 	var (
 		pipe *internal.Pipeline
 		err  error
 	)
-	var dump_path string
-	if len(os.Args) == 4 {
-		dump_path = os.Args[3]
-	}
 	if push_ep == "-no-push" {
 		pipe, err = internal.NewPipelineDump(pull_ep, dump_path)
 	} else {

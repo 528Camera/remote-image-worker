@@ -8,7 +8,6 @@ import (
 	"github.com/AsriFox/remote-image-worker/internal/encod"
 	"github.com/AsriFox/remote-image-worker/internal/proc"
 	"github.com/AsriFox/remote-image-worker/internal/socket"
-	"gocv.io/x/gocv"
 )
 
 type Pipeline struct {
@@ -66,18 +65,12 @@ func (pipe Pipeline) Process() error {
 		// log.Println("Failed to decode")
 		return err
 	}
-
-	edg := proc.DetectEdges(&img)
-	gocv.CvtColor(edg, &edg, gocv.ColorGrayToBGR)
-	err = proc.ReduceColors(&img)
+	imgr, err := proc.ProcessImage(&img)
 	if err != nil {
 		// log.Println("Failed to process the image")
 		return err
 	}
-	imgr := img.Clone()
-	gocv.AddWeighted(img, 1.0, edg, -1.0, 0.0, &imgr)
-
-	buf, err := encod.NewJpegDefaults(50).Imencode(img)
+	buf, err := encod.NewJpegDefaults(50).Imencode(*imgr)
 	if err != nil {
 		// log.Println("Failed to encode the image")
 		return err
