@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -10,10 +11,31 @@ import (
 // Can process only MAX frames at the same time
 const MAX = 10
 
+func printUsage(help bool) {
+	fmt.Println("Usage:")
+	fmt.Println("remote-image-worker [pull-endpoint] [push-endpoint] {dump-path}")
+	if help {
+		fmt.Print("\t- Normal operation as a remote worker.\n\t- Optional: dump images in {dump-path} location.\n\n")
+	}
+	fmt.Println("remote-image-worker [pull-endpoint] -no-push {dump-path}")
+	if help {
+		fmt.Print("\t- Process incoming images but don't transmit them.\n\t- Optional: dump images in {dump-path} location.\n\n")
+	}
+	fmt.Println("remote-image-worker -h")
+	if help {
+		fmt.Print("\t- Print this message.\n\n")
+	}
+}
+
 func main() {
 	// Parse command line arguments:
+	if len(os.Args) == 2 && os.Args[1] == "-h" {
+		printUsage(true)
+		return
+	}
 	if len(os.Args) < 3 {
-		log.Println("Insufficient number of arguments.\nUsage: remote-image-worker [pull-endpoint] [push-endpoint] {dump-path}")
+		fmt.Println("Error: Insufficient number of arguments.")
+		printUsage(false)
 		return
 	}
 	pull_ep := os.Args[1]
